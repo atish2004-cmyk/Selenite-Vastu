@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = Object.fromEntries(formData.entries());
 
       try {
-        const response = await fetch('/api/book', {
+        const response = await fetch('/.netlify/functions/book', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
