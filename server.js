@@ -1,12 +1,32 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
-const db = require('./database');
+const mongoose = require('mongoose');
 const axios = require('axios');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/seleniteVastu';
+
+// Connect to MongoDB
+mongoose.connect(MONGO_URI)
+  .then(() => console.log('Connected to MongoDB.'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// Define Appointment Schema & Model
+const appointmentSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    phone: { type: String, required: true },
+    address: { type: String, default: '' },
+    service: { type: String },
+    message: { type: String, default: '' },
+    createdAt: { type: Date, default: Date.now }
+});
+
+const Appointment = mongoose.model('Appointment', appointmentSchema);
 
 // Middleware
 app.use(cors());
@@ -17,41 +37,45 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/'))); 
 
 // API Routes
-app.post('/api/book', (req, res) => {
-    const { name, email, phone, service, message } = req.body;
+app.post('/api/book', async (req, res) => {
+    const { name, email, phone, address, service, message } = req.body;
     
     if(!name || !email || !phone) {
         return res.status(400).json({ error: 'Name, email, and phone are required.' });
     }
 
-    const sql = `INSERT INTO appointments (name, email, phone, service, message) VALUES (?, ?, ?, ?, ?)`;
-    const params = [name, email, phone, service, message || ''];
-    
-    db.run(sql, params, async function(err) {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
+    try {
+        const newAppointment = new Appointment({
+            name, email, phone, address, service, message
+        });
+
+        // Save to MongoDB Database
+        const savedAppointment = await newAppointment.save();
         
         // Send data to Google Sheets
         const googleAppsScriptUrl = 'https://script.google.com/macros/s/AKfycbzsavJddKBRjUqeloCEzxYVnKOWVk5tRAgd77sdenUSwrM5MRHyvyKYRqarnmjc2jqT/exec';
         try {
-            await axios.post(googleAppsScriptUrl, { name, email, phone, service, message });
+            await axios.post(googleAppsScriptUrl, newAppointment.toObject());
         } catch (scriptErr) {
             console.error('Error saving to Google Sheets:', scriptErr.message);
         }
 
-        res.json({ message: 'Appointment booked successfully', id: this.lastID });
-    });
+        res.json({ message: 'Appointment booked successfully', id: savedAppointment._id });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
-app.get('/api/appointments', (req, res) => {
-    const sql = `SELECT * FROM appointments ORDER BY createdAt DESC`;
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.json(rows);
-    });
+app.get('/api/appointments', async (req, res) => {
+    try {
+        // Fetch all appointments sorted by newest first
+        const appointments = await Appointment.find().sort({ createdAt: -1 });
+        res.json(appointments);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to read appointments' });
+    }
 });
 
 app.listen(PORT, () => {

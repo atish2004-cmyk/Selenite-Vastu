@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div style="margin-bottom: 4px;">✉️ <a href="mailto:${appointment.email}" style="color: #2F2F2F; text-decoration: none;">${appointment.email}</a></div>
                         <div style="color: #666; font-size: 0.95em;">📞 <a href="tel:${appointment.phone}" style="color: #666; text-decoration: none;">${appointment.phone}</a></div>
                     </td>
+                    <td>
+                        <div style="font-size: 0.9em; color: #444; word-break: break-word;">${appointment.address || '<em>Not provided</em>'}</div>
+                    </td>
                     <td><span class="badge">${appointment.service}</span></td>
                     <td style="max-width: 300px; font-size: 0.9em; color:#555; line-height: 1.4;">${appointment.message || '<em>No message attached</em>'}</td>
                 `;

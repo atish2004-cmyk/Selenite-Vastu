@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Consult For - Selenite Vastu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <!-- Top Contact Bar -->
+    <div class="top-bar">
+      <div class="top-bar-content container">
+        <div class="contact-info">
+          <a href="tel:7573085559">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            75730 85559
+          </a>
+          <a href="mailto:shwetasuniltiwari89@gmail.com">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            shwetasuniltiwari89@gmail.com
+          </a>
+        </div>
+        <div class="availability">
+          Online & Offline Consultation Available
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="main-header" id="header" style="box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+      <div class="header-content container">
+        <div class="logo-area">
+          <div class="logo-icon image-icon">
+            <img src="./selenite_vastu_logo.png" alt="Selenite Vastu Logo" width="100%" height="100%" style="object-fit: cover; border-radius: 8px;">
+          </div>
+          <div class="brand">
+            <a href="index.html" style="text-decoration:none;">
+              <h1>Selenite Vastu</h1>
+              <p>Align Your Space, Elevate Your Life</p>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Main Navigation Component -->
+        <nav class="main-nav" id="mainNav">
+          <ul class="nav-list">
+            <li><a href="index.html#about" class="nav-link">About Us</a></li>
+            <li class="dropdown">
+              <a href="javascript:void(0)" class="nav-link">Services <span class="caret">▾</span></a>
+              <div class="dropdown-menu">
+                <a href="service-details.html?id=residential">Residential Vastu</a>
+                <a href="service-details.html?id=commercial">Commercial Office</a>
+                <a href="service-details.html?id=industrial">Industrial Vastu</a>
+                <a href="service-details.html?id=astronumerology">Astro Numerology</a>
+              </div>
+            </li>
+            <li class="dropdown">
+              <a href="javascript:void(0)" class="nav-link">Consult For <span class="caret">▾</span></a>
+              <div class="dropdown-menu">
+                <a href="consult-details.html?id=financial">Financial Blocks</a>
+                <a href="consult-details.html?id=relationships">Relationship Issues</a>
+                <a href="consult-details.html?id=health">Health Restoration</a>
+                <a href="consult-details.html?id=business">Business Growth</a>
+              </div>
+            </li>
+            <li><a href="contact-us.html" class="nav-link">Contact Us</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-actions">
+          <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Toggle Navigation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <a href="index.html#bookingForm" class="cta-btn primary-btn" style="text-decoration:none;">Book Consultation</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+       <!-- Breadcrumb Banner -->
+       <section class="breadcrumb-banner">
+         <div class="container">
+           <h2>Consult For</h2>
+           <p><a href="index.html">Home</a> &nbsp;>&nbsp; Consult For &nbsp;>&nbsp; <span id="breadcrumb-title">Loading...</span></p>
+         </div>
+       </section>
+
+       <!-- Dynamic Details Container (CSS cloned from Service template) -->
+       <section class="service-details-wrapper container">
+          <div class="service-intro-row">
+             <div class="service-img-col">
+                <img id="service-image" src="" alt="Consult Banner" class="dynamic-img">
+             </div>
+             <div class="service-text-col">
+                <h1 id="service-title">Loading...</h1>
+                <h3 id="service-subtitle" style="color:var(--primary-gold); margin-bottom:20px;">...</h3>
+                <p id="service-description" style="line-height:1.8; color:var(--text-light); font-size:1.1rem;">
+                  Fetching issue information from records...
+                </p>
+                <div style="margin-top: 30px;">
+                   <a href="contact-us.html" class="cta-btn primary-btn">Request Analysis</a>
+                </div>
+             </div>
+          </div>
+
+          <div class="service-deep-dive">
+             <div class="benefits-col">
+                <h2>Why It Is Important</h2>
+                <div class="title-underline"></div>
+                <ul class="advanced-list" id="benefits-list">
+                   <!-- Populated via JS -->
+                </ul>
+             </div>
+             <div class="areas-col">
+                <h2>Key Areas in Focus</h2>
+                <div class="title-underline"></div>
+                <div class="advanced-list area-list" id="areas-list">
+                   <!-- Populated via JS -->
+                </div>
+             </div>
+          </div>
+       </section>
+    </main>
+
+    <!-- Extended Footer (Identical to Home) -->
+    <footer class="extended-footer">
+      <div class="container footer-grid">
+        <div class="footer-col widget-brand">
+          <div class="logo-area" style="margin-bottom: 20px;">
+             <div class="logo-icon image-icon" style="background: white; overflow: hidden;">
+                <img src="./selenite_vastu_logo.png" alt="Selenite Vastu Logo" width="100%" height="100%" style="object-fit: cover; border-radius: 8px;">
+             </div>
+             <div class="brand" style="color: white;">
+                <h2 style="color: white; margin: 0; font-size: 1.5rem;">Selenite Vastu</h2>
+             </div>
+          </div>
+          <p style="color: rgba(255,255,255,0.8); line-height: 1.6;">Align Your Space, Elevate Your Life. Providing expert residential, commercial, and industrial Vastu consulting globally.</p>
+        </div>
+        
+        <div class="footer-col widget-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html#about">About Us</a></li>
+            <li><a href="index.html#services">Our Services</a></li>
+            <li><a href="index.html#remedies">Remedies</a></li>
+            <li><a href="contact-us.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col widget-links">
+          <h3>Services</h3>
+          <ul>
+             <li><a href="service-details.html?id=residential">Residential Vastu</a></li>
+             <li><a href="service-details.html?id=commercial">Commercial Office</a></li>
+             <li><a href="service-details.html?id=industrial">Industrial Vastu</a></li>
+             <li><a href="service-details.html?id=astronumerology">Astro Numerology</a></li>
+          </ul>
+        </div>
+        <div class="footer-col widget-contact">
+          <h3>Contact Detail</h3>
+          <p class="footer-info"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> <span>+91 75730 85559</span></p>
+          <p class="footer-info"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> <span>shwetasuniltiwari89@gmail.com</span></p>
+          <p class="footer-info"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <span>Bathinda, Punjab, India</span></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Selenite Vastu. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <!-- Load the shared scripts -->
+    <script src="./script.js"></script>
+    <script src="./consult-data.js"></script>
+  </body>
+</html>

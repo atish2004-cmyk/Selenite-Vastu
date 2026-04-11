@@ -13,58 +13,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Modal Logic
-  const modal = document.getElementById('bookingModal');
-  const closeModalBtn = document.getElementById('closeModalBtn');
+  // Modal removed: Booking formulation is directly embedded in hero.
 
-  const openModal = () => {
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Prevent background scrolling
-  };
-
-  const closeModal = () => {
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
-  };
-
-  ctaBtns.forEach(btn => {
-    // Only bind modal to buttons that don't have form submission type
-    if (btn.type !== 'submit') {
-      btn.addEventListener('click', openModal);
-    }
-  });
-
-  closeModalBtn.addEventListener('click', closeModal);
-
-  // Close modal when clicking on background overlay
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      closeModal();
-    }
-  });
-
-  // Adding entry animations for service cards
+  // Adding entry animations
   const observerOptions = {
-    threshold: 0.1,
+    threshold: 0.05,
     rootMargin: "0px 0px -50px 0px"
   };
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
+        entry.target.classList.add('is-visible');
         observer.unobserve(entry.target);
       }
     });
   }, observerOptions);
 
-  const cards = document.querySelectorAll('.service-card');
-  cards.forEach((card, index) => {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(30px)';
-    card.style.transition = `all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) ${index * 0.1}s`;
-    observer.observe(card);
+  const animatedElements = document.querySelectorAll('.service-card, .issue-card, .panchang-widget, .remedies-content, .profile-card, .shloka-banner, .review-box, .reveal-on-scroll');
+  animatedElements.forEach((el, index) => {
+    if (!el.classList.contains('reveal-on-scroll')) {
+      el.classList.add('animate-on-scroll');
+    }
+    const staggerDelay = (index % 5) * 0.1;
+    el.style.transitionDelay = `${staggerDelay}s`;
+    observer.observe(el);
   });
 
   // Backend Integration: Form Submission
@@ -82,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = Object.fromEntries(formData.entries());
 
       try {
-        const response = await fetch('/.netlify/functions/book', {
+        const response = await fetch('http://localhost:3000/api/book', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -95,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (response.ok) {
           alert('Thank you! Your consultation request has been received.');
           bookingForm.reset();
-          closeModal();
         } else {
           alert('Error: ' + (result.error || 'Something went wrong.'));
         }
@@ -108,6 +80,100 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // AI Voice "Video" Player Logic
+  const playButton = document.querySelector('.play-button');
+  const videoImg = document.querySelector('.video-img');
+  let isPlayingAudio = false;
+
+  // Load voices securely
+  let availableVoices = [];
+  window.speechSynthesis.onvoiceschanged = () => {
+    availableVoices = window.speechSynthesis.getVoices();
+  };
+
+  if (playButton && videoImg) {
+    playButton.addEventListener('click', () => {
+      // If already playing, stop the audio and reset the "video" state
+      if (isPlayingAudio) {
+        window.speechSynthesis.cancel();
+        isPlayingAudio = false;
+        playButton.innerHTML = '▶';
+        videoImg.style.transform = 'scale(1)';
+        videoImg.style.filter = 'brightness(0.85)';
+        return;
+      }
+
+      // Start the "video" AI voice
+      const scriptText = "Welcome to Selenite Vastu. Selenite Vastu is a profound, scientific approach to aligning your living and working spaces with cosmic energy. Rooted in ancient principles, our methodology combines Vastu Shastra with modern energy scanning. We focus on balancing the Five Elements and the 16 Vastu Zones to invite harmony and unblock stagnant paths to wealth and health.";
+      
+      const utterance = new SpeechSynthesisUtterance(scriptText);
+      
+      // Try to find a premium Female English voice
+      if (availableVoices.length === 0) {
+         availableVoices = window.speechSynthesis.getVoices();
+      }
+      const premiumVoice = availableVoices.find(v => 
+         v.name.includes('Natural') || 
+         v.name.includes('Zira') || 
+         v.name.includes('Google UK English Female') || 
+         v.name.includes('Samantha')
+      );
+      
+      if (premiumVoice) {
+         utterance.voice = premiumVoice;
+      }
+      
+      utterance.pitch = 1.0;
+      utterance.rate = 0.9; // Slightly slower for a calming consultant voice
+
+      utterance.onstart = () => {
+        isPlayingAudio = true;
+        playButton.innerHTML = '⏸'; // Change to pause icon
+        videoImg.style.transition = 'transform 15s linear, filter 0.5s';
+        videoImg.style.filter = 'brightness(1)';
+        videoImg.style.transform = 'scale(1.15)'; // Slow zoom effect to simulate video
+      };
+
+      utterance.onend = () => {
+        isPlayingAudio = false;
+        playButton.innerHTML = '▶';
+        videoImg.style.transition = 'transform 0.5s ease, filter 0.5s';
+        videoImg.style.transform = 'scale(1)';
+        videoImg.style.filter = 'brightness(0.85)';
+      };
+      
+      // Error handling (e.g. if interrupted)
+      utterance.onerror = () => {
+        isPlayingAudio = false;
+        playButton.innerHTML = '▶';
+        videoImg.style.transform = 'scale(1)';
+      };
+
+      window.speechSynthesis.cancel(); // Clear any queued utterances
+      window.speechSynthesis.speak(utterance);
+    });
+  }
+
+  // Mobile Navigation Logic
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mainNav = document.getElementById('mainNav');
+  const dropdowns = document.querySelectorAll('.dropdown');
+
+  if (mobileMenuBtn && mainNav) {
+    mobileMenuBtn.addEventListener('click', () => {
+      mainNav.classList.toggle('active');
+    });
+  }
+
+  // Handle mobile dropdown expansion
+  dropdowns.forEach(dropdown => {
+    dropdown.addEventListener('click', (e) => {
+      if (window.innerWidth <= 1024) {
+        dropdown.classList.toggle('active');
+      }
+    });
+  });
 
   // Theme Switcher Logic
   const themeBtns = document.querySelectorAll('.theme-btn');
