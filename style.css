@@ -33,8 +33,7 @@
 
 html, body {
   width: 100%;
-  overflow-x: auto;
-  min-width: 1200px;
+  overflow-x: hidden;
 }
 
 body {
@@ -49,7 +48,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
-  min-width: 1150px;
+  width: 100%;
 }
 
 /* ============================================
@@ -1889,18 +1888,213 @@ body {
 }
 
 /* ============================================
-   DESKTOP-ONLY LAYOUT - ALL DEVICES
-   Mobile and Tablet views disabled to show exact desktop layout on all screen sizes
+   RESPONSIVE DESIGN (MEDIA QUERIES)
    ============================================ */
 
-/* Mobile navigation hidden - desktop navigation always visible */
-.mobile-menu-toggle {
-  display: none !important;
+/* TABLET & SMALL DESKTOP (Max 1024px) */
+@media (max-width: 1024px) {
+  .hero-container.two-column-hero,
+  .two-col-layout,
+  .service-intro-row,
+  .service-deep-dive,
+  .profile-card,
+  .remedies-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .left-col, .right-col,
+  .video-placeholder-col, .text-content-col,
+  .service-img-col, .service-text-col,
+  .benefits-col, .areas-col {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-trust-list li {
+    justify-content: center;
+  }
+  
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .panchang-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .issues-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .avatar-circle {
+    margin: 0 auto;
+  }
+  
+  .profile-actions {
+    justify-content: center;
+  }
 }
 
-.main-nav {
-  display: flex !important;
+/* TABLET/MOBILE HEADER (Max 992px) */
+@media (max-width: 992px) {
+  .mobile-menu-toggle {
+    display: block;
+    color: var(--text-dark);
+  }
+
+  .main-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--card-bg);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transform: translateY(-20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 99;
+  }
+
+  .main-nav.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .nav-list {
+    flex-direction: column;
+    padding: 20px;
+    gap: 0;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .nav-link::after {
+    display: none;
+  }
+
+  .dropdown-menu {
+    position: static;
+    box-shadow: none;
+    border-top: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    display: none;
+    padding-left: 20px;
+  }
+
+  .dropdown.active .dropdown-menu {
+    display: block;
+  }
+
+  .header-actions {
+    margin-left: auto;
+    margin-right: 15px;
+  }
+
+  .brand h1 {
+    font-size: 1.2rem;
+  }
 }
 
-/* All media queries removed - desktop design applied to all device sizes */
+/* MOBILE (Max 768px) */
+@media (max-width: 768px) {
+  .top-bar-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .contact-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .header-actions .cta-btn.primary-btn {
+    display: none;
+  }
 
+  .services-grid,
+  .issues-grid,
+  .footer-grid,
+  .panchang-details > .tithi-list {
+    grid-template-columns: 1fr !important;
+  }
+
+  .panchang-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .about-intro-text,
+  .why-us-content,
+  .values-grid {
+    flex-direction: column;
+  }
+  
+  .values-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .why-us-wrapper {
+    flex-direction: column;
+  }
+
+  .why-us-stats {
+    width: 100%;
+  }
+
+  .feature-list li {
+    font-size: 0.95rem;
+  }
+
+  .hero-banner {
+    padding: 60px 0 80px;
+  }
+}
+
+/* SMALL MOBILE (Max 480px) */
+@media (max-width: 480px) {
+  .panchang-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+  }
+  .hero-buttons > a {
+    width: 100%;
+  }
+
+  .center-btn-wrapper {
+    flex-direction: column;
+  }
+
+  .center-btn-wrapper > a {
+    width: 100%;
+  }
+}

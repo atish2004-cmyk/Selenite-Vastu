@@ -407,6 +407,31 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('✅ Selenite Vastu JS loaded successfully');
   console.log('Device:', getDeviceType());
   console.log('Layout: Desktop-Only (All Devices)');
-  console.log('Theme:', savedTheme);
+  console.log('Mobile navigation logic initialized');
+
+  // ============================================
+  // MOBILE MENU TOGGLE LOGIC
+  // ============================================
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mainNav = document.getElementById('mainNav');
+  
+  if (mobileMenuBtn && mainNav) {
+    mobileMenuBtn.addEventListener('click', () => {
+      mainNav.classList.toggle('active');
+    });
+  }
+
+  // Handle dropdowns on mobile
+  const dropdowns = document.querySelectorAll('.dropdown');
+  dropdowns.forEach(dropdown => {
+    dropdown.addEventListener('click', (e) => {
+      if (window.innerWidth <= 992) {
+        if (e.target.tagName !== 'A' || e.target.getAttribute('href') === 'javascript:void(0)') {
+          dropdown.classList.toggle('active');
+          e.preventDefault();
+        }
+      }
+    });
+  });
 
 });
