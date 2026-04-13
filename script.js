@@ -1,4 +1,4 @@
-// Selenite Vastu Interactions - Fully Responsive
+// Selenite Vastu Interactions - Desktop Layout on All Devices
 
 document.addEventListener('DOMContentLoaded', () => {
   const header = document.getElementById('header');
@@ -166,72 +166,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================
-  // MOBILE NAVIGATION - RESPONSIVE MENU
+  // NAVIGATION - DESKTOP LAYOUT ON ALL DEVICES
   // ============================================
-  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  // Mobile menu navigation is hidden via CSS
+  // Desktop navigation is always visible
+  // Navigation dropdowns work via CSS hover on desktop
   const mainNav = document.getElementById('mainNav');
   const navLinks = document.querySelectorAll('.nav-link');
 
-  if (mobileMenuBtn && mainNav) {
-    // Toggle menu on button click
-    mobileMenuBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      mainNav.classList.toggle('active');
-      mobileMenuBtn.setAttribute('aria-expanded', 
-        mainNav.classList.contains('active') ? 'true' : 'false'
-      );
-    });
-
-    // Close menu when clicking on a link
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        mainNav.classList.remove('active');
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
-      });
-    });
-
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.main-nav') && !e.target.closest('.mobile-menu-toggle')) {
-        mainNav.classList.remove('active');
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    // Close menu on window resize (for responsive behavior)
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 1024) {
-        mainNav.classList.remove('active');
-        mobileMenuBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
+  // Ensure navigation is always visible
+  if (mainNav) {
+    mainNav.classList.remove('active');
   }
-
-  // ============================================
-  // MOBILE DROPDOWN HANDLING
-  // ============================================
-  const dropdowns = document.querySelectorAll('.dropdown');
-
-  dropdowns.forEach(dropdown => {
-    const toggle = dropdown.querySelector('[role="button"]') || dropdown.querySelector('a');
-    
-    if (toggle) {
-      toggle.addEventListener('click', (e) => {
-        if (window.innerWidth <= 1024) {
-          e.preventDefault();
-          
-          // Close other dropdowns
-          dropdowns.forEach(other => {
-            if (other !== dropdown) {
-              other.classList.remove('active');
-            }
-          });
-          
-          dropdown.classList.toggle('active');
-        }
-      });
-    }
-  });
 
   // ============================================
   // THEME SWITCHER LOGIC
@@ -304,28 +250,22 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ============================================
-  // DEVICE DETECTION & RESPONSIVE HELPERS
+  // DEVICE DETECTION - DESKTOP-ONLY LAYOUT
   // ============================================
+  // All devices now display desktop layout
   const getDeviceType = () => {
-    const width = window.innerWidth;
-    if (width <= 480) return 'mobile';
-    if (width <= 768) return 'tablet';
-    if (width <= 1024) return 'medium-desktop';
     return 'desktop';
   };
 
   const deviceType = getDeviceType();
   console.log('Device Type:', deviceType);
 
-  // Adjust touch-friendly elements on mobile
-  if (deviceType === 'mobile' || deviceType === 'tablet') {
-    const buttons = document.querySelectorAll('.cta-btn, .contact-pill, .sticky-whatsapp, .sticky-book');
-    buttons.forEach(btn => {
-      // Increase touch target size
-      btn.style.minHeight = '44px';
-      btn.style.minWidth = '44px';
-    });
-  }
+  // All buttons use desktop sizing since all devices show desktop layout
+  const buttons = document.querySelectorAll('.cta-btn, .contact-pill, .sticky-whatsapp, .sticky-book');
+  buttons.forEach(btn => {
+    btn.style.minHeight = '44px';
+    btn.style.minWidth = '44px';
+  });
 
   // ============================================
   // MODAL / DIALOG HANDLING
@@ -430,15 +370,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ============================================
-  // VIEWPORT HEIGHT FIX FOR MOBILE
+  // VIEWPORT HEIGHT MANAGEMENT - DESKTOP LAYOUT
   // ============================================
+  // Viewport height is managed via CSS custom properties
   const setViewportHeight = () => {
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
   };
   setViewportHeight();
   window.addEventListener('resize', setViewportHeight);
-  window.addEventListener('orientationchange', setViewportHeight);
 
   // ============================================
   // PERFORMANCE: DEBOUNCE SCROLL & RESIZE
@@ -466,6 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ============================================
   console.log('✅ Selenite Vastu JS loaded successfully');
   console.log('Device:', getDeviceType());
+  console.log('Layout: Desktop-Only (All Devices)');
   console.log('Theme:', savedTheme);
 
 });
