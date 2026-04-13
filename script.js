@@ -413,11 +413,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // MOBILE MENU TOGGLE LOGIC
   // ============================================
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-  const mainNav = document.getElementById('mainNav');
+  const mainNavEl = document.getElementById('mainNav');
   
-  if (mobileMenuBtn && mainNav) {
+  if (mobileMenuBtn && mainNavEl) {
     mobileMenuBtn.addEventListener('click', () => {
-      mainNav.classList.toggle('active');
+      mainNavEl.classList.toggle('active');
     });
   }
 

@@ -2031,7 +2031,9 @@ body {
   }
   
   .header-actions .cta-btn.primary-btn {
-    display: none;
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 0.9rem;
   }
 
   .services-grid,
