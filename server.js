@@ -28,6 +28,16 @@ const appointmentSchema = new mongoose.Schema({
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
 
+// Define Review Schema & Model
+const reviewSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    rating: { type: Number, required: true, min: 1, max: 5 },
+    message: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now }
+});
+
+const Review = mongoose.model('Review', reviewSchema);
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
@@ -75,6 +85,23 @@ app.get('/api/appointments', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to read appointments' });
+    }
+});
+
+app.post('/api/review', async (req, res) => {
+    const { name, rating, message } = req.body;
+    
+    if(!name || !rating || !message) {
+        return res.status(400).json({ error: 'Name, rating, and message are required.' });
+    }
+
+    try {
+        const newReview = new Review({ name, rating, message });
+        await newReview.save();
+        res.json({ message: 'Review submitted successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
