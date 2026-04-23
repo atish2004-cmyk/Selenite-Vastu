@@ -2415,3 +2415,33 @@ img, svg, video, iframe {
 @media (max-width: 600px) {
   .split-row { grid-template-columns: 1fr; }
 }
+
+/* Dark mode overrides for Pandit Style Panchang */
+[data-theme="dark"] .panchang-widget.pandit-style {
+  background-color: var(--card-bg);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  color: var(--text-dark);
+}
+[data-theme="dark"] .panchang-widget.pandit-style .panchang-date {
+  color: var(--text-dark);
+}
+[data-theme="dark"] .panchang-times-grid {
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  background-color: rgba(255,255,255,0.02);
+}
+[data-theme="dark"] .time-val {
+  color: var(--text-dark);
+}
+[data-theme="dark"] .info-row {
+  border-bottom: 1px solid #333;
+}
+[data-theme="dark"] .info-row.no-border {
+  border-bottom: none;
+}
+[data-theme="dark"] .info-title {
+  color: var(--primary-gold);
+}
+[data-theme="dark"] .info-val {
+  color: var(--text-light);
+}
