@@ -486,25 +486,63 @@ document.addEventListener('DOMContentLoaded', () => {
       // We will handle the live clock in a separate interval
       const now = new Date();
       
-      // Fetch dynamic panchang from the new API
-      const response = await fetch("http://localhost:5000/api/panchang", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          day: now.getDate(),
-          month: now.getMonth() + 1,
-          year: now.getFullYear(),
-          hour: now.getHours(),
-          min: now.getMinutes(),
-          lat: 23.0758,
-          lon: 70.1337,
-          tzone: 5.5,
-        }),
-      });
+      // Use standalone astronomical approximations to prevent server errors
+      const LUNAR_MONTH = 29.53058868;
+      const SIDEREAL_MONTH = 27.321661;
+      const epoch = new Date('2024-01-11T11:27:00Z').getTime(); // Known New Moon
+      const diffDays = (now.getTime() - epoch) / (1000 * 60 * 60 * 24);
+      
+      let currentFraction = (diffDays / LUNAR_MONTH) % 1;
+      if (currentFraction < 0) currentFraction += 1;
+      
+      let siderealFraction = (diffDays / SIDEREAL_MONTH) % 1;
+      if (siderealFraction < 0) siderealFraction += 1;
+      // Adjust sidereal epoch offset for Nakshatra (approx Mula/Purva Ashadha on Jan 11 2024)
+      siderealFraction = (siderealFraction + 0.72) % 1; 
 
-      const data = await response.json();
+      const tithiIndex = Math.floor(currentFraction * 30);
+      const karanaIndex = Math.floor(currentFraction * 60);
+      const naksIndex = Math.floor(siderealFraction * 27);
+      const yogaIndex = Math.floor((currentFraction + siderealFraction) * 27) % 27;
+      
+      const tithis = [
+        "Pratipada", "Dwitiya", "Tritiya", "Chaturthi", "Panchami", 
+        "Shashthi", "Saptami", "Ashtami", "Navami", "Dashami", 
+        "Ekadashi", "Dwadashi", "Trayodashi", "Chaturdashi", "Purnima",
+        "Pratipada", "Dwitiya", "Tritiya", "Chaturthi", "Panchami", 
+        "Shashthi", "Saptami", "Ashtami", "Navami", "Dashami", 
+        "Ekadashi", "Dwadashi", "Trayodashi", "Chaturdashi", "Amavasya"
+      ];
+      
+      const nakshatras = [
+        "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashirsha", "Ardra", 
+        "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", 
+        "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", 
+        "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", 
+        "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", 
+        "Uttara Bhadrapada", "Revati"
+      ];
+      
+      const yogas = [
+        "Vishkambha", "Priti", "Ayushman", "Saubhagya", "Shobhana", "Atiganda", 
+        "Sukarma", "Dhriti", "Shula", "Ganda", "Vriddhi", "Dhruva", "Vyaghata", 
+        "Harshana", "Vajra", "Siddhi", "Vyatipata", "Variyan", "Parigha", "Shiva", 
+        "Siddha", "Sadhya", "Shubha", "Shukla", "Brahma", "Indra", "Vaidhriti"
+      ];
+      
+      const karanas = ["Bava", "Balava", "Kaulava", "Taitila", "Gara", "Vanija", "Vishti", "Shakuni", "Chatushpada", "Naga", "Kimstughna"];
+      
+      const getPaksha = (i) => i < 15 ? 'Shukla' : 'Krishna';
+      const tithiName = `${getPaksha(tithiIndex)} ${tithis[tithiIndex]}`;
+      const nakshatraName = nakshatras[naksIndex];
+      const yogaName = yogas[yogaIndex];
+      const karanaName = karanas[karanaIndex % 11];
+
+      // Format time approximations for Tithi end
+      const tithiProgress = (currentFraction * 30) - tithiIndex;
+      const hoursRemaining = (1 - tithiProgress) * (LUNAR_MONTH / 30 * 24);
+      const tithiEndTime = new Date(now.getTime() + (hoursRemaining * 60 * 60 * 1000));
+      const formatTime = (d) => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
       // Populate DOM elements
       const elSunrise = document.getElementById('panchang-sunrise');
@@ -516,16 +554,30 @@ document.addEventListener('DOMContentLoaded', () => {
       const elTithiEnd = document.getElementById('panchang-tithi-end');
       const elNakshatra = document.getElementById('panchang-nakshatra');
 
-      if (elSunrise && data.sunrise) elSunrise.innerText = data.sunrise;
-      if (elSunset && data.sunset) elSunset.innerText = data.sunset;
-      if (elYoga && data.yoga) elYoga.innerText = data.yoga.name;
-      if (elKarana && data.karana) elKarana.innerText = data.karana.name;
+      if (elYoga) elYoga.innerText = yogaName;
+      if (elKarana) elKarana.innerText = karanaName;
       
-      if (elTithiName && data.tithi) {
-         elTithiName.innerText = data.tithi.name;
-         elTithiStart.innerText = data.tithi.start;
-         elTithiEnd.innerText = data.tithi.end;
+      if (elTithiName) {
+         elTithiName.innerText = tithiName;
+         if(elTithiStart) elTithiStart.innerText = "Started Earlier";
+         if(elTithiEnd) elTithiEnd.innerText = formatTime(tithiEndTime);
       }
+      
+      if (elNakshatra) {
+         elNakshatra.innerText = nakshatraName;
+      }
+
+      // Fetch actual sunrise/sunset from public API
+      try {
+        const srRes = await fetch('https://api.sunrise-sunset.org/json?lat=23.0758&lng=70.1337&formatted=0');
+        const srData = await srRes.json();
+        if(srData.status === 'OK') {
+          const sunrise = new Date(srData.results.sunrise);
+          const sunset = new Date(srData.results.sunset);
+          if (elSunrise) elSunrise.innerText = formatTime(sunrise);
+          if (elSunset) elSunset.innerText = formatTime(sunset);
+        }
+      } catch (e) { console.log('Sunrise fetch failed'); }
       
       if (elNakshatra && data.nakshatra) {
          elNakshatra.innerText = data.nakshatra.name;
