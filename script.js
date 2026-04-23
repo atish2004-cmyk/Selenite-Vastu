@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // SCROLL ANIMATION OBSERVER
   // ============================================
   const observerOptions = {
-    threshold: 0.05,
-    rootMargin: "0px 0px -50px 0px"
+    threshold: 0.01,
+    rootMargin: "0px 0px -20px 0px"
   };
 
   const observer = new IntersectionObserver((entries) => {
@@ -482,68 +482,74 @@ document.addEventListener('DOMContentLoaded', () => {
   const updateDailyPanchang = async () => {
     try {
       const currentDateEl = document.getElementById('currentDate');
-      if (!currentDateEl) return;
       
+      // We will handle the live clock in a separate interval
       const now = new Date();
-      const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
-      currentDateEl.innerText = now.toLocaleDateString('en-GB', options).toUpperCase();
       
-      const LUNAR_MONTH = 29.53058868;
-      const epoch = new Date('2024-01-11T11:27:00Z').getTime(); // Known New Moon
-      const diffDays = (now.getTime() - epoch) / (1000 * 60 * 60 * 24);
-      const lunarCyclePassed = diffDays / LUNAR_MONTH;
-      let currentFraction = lunarCyclePassed - Math.floor(lunarCyclePassed);
-      if (currentFraction < 0) currentFraction += 1;
-      
-      const tithiIndex = Math.floor(currentFraction * 30);
-      const nextTithiIndex = (tithiIndex + 1) % 30;
-      
-      const tithis = [
-        "Pratipada", "Dwitiya", "Tritiya", "Chaturthi", "Panchami", 
-        "Shashthi", "Saptami", "Ashtami", "Navami", "Dashami", 
-        "Ekadashi", "Dwadashi", "Trayodashi", "Chaturdashi", "Purnima",
-        "Pratipada", "Dwitiya", "Tritiya", "Chaturthi", "Panchami", 
-        "Shashthi", "Saptami", "Ashtami", "Navami", "Dashami", 
-        "Ekadashi", "Dwadashi", "Trayodashi", "Chaturdashi", "Amavasya"
-      ];
-      
-      const getPaksha = (i) => i < 15 ? 'Shukla' : 'Krishna';
-      const currentTithiStr = `${getPaksha(tithiIndex)} ${tithis[tithiIndex]}`;
-      const nextTithiStr = `${getPaksha(nextTithiIndex)} ${tithis[nextTithiIndex]}`;
-      
-      // Update DOM with explicit Tithi logic
-      const tithiElements = document.querySelectorAll('.tithi-list strong');
-      // The strong tags inside tithi-list actually contain the names
-      let matchCount = 0;
-      tithiElements.forEach((el) => {
-          if (el.innerText.includes('Saptami') || el.innerText.includes('Krishna') || el.innerText.includes('Shukla') || el.style.fontSize === '1.1rem') {
-              if(matchCount === 0) el.innerText = currentTithiStr;
-              if(matchCount === 1) el.innerText = nextTithiStr;
-              matchCount++;
-          }
+      // Fetch dynamic panchang from the new API
+      const response = await fetch("http://localhost:5000/api/panchang", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          day: now.getDate(),
+          month: now.getMonth() + 1,
+          year: now.getFullYear(),
+          hour: now.getHours(),
+          min: now.getMinutes(),
+          lat: 23.0758,
+          lon: 70.1337,
+          tzone: 5.5,
+        }),
       });
+
+      const data = await response.json();
+
+      // Populate DOM elements
+      const elSunrise = document.getElementById('panchang-sunrise');
+      const elSunset = document.getElementById('panchang-sunset');
+      const elYoga = document.getElementById('panchang-yoga');
+      const elKarana = document.getElementById('panchang-karana');
+      const elTithiName = document.getElementById('panchang-tithi-name');
+      const elTithiStart = document.getElementById('panchang-tithi-start');
+      const elTithiEnd = document.getElementById('panchang-tithi-end');
+      const elNakshatra = document.getElementById('panchang-nakshatra');
+
+      if (elSunrise && data.sunrise) elSunrise.innerText = data.sunrise;
+      if (elSunset && data.sunset) elSunset.innerText = data.sunset;
+      if (elYoga && data.yoga) elYoga.innerText = data.yoga.name;
+      if (elKarana && data.karana) elKarana.innerText = data.karana.name;
       
-      // Update sunrise/sunset
-      try {
-        const srRes = await fetch('https://api.sunrise-sunset.org/json?lat=28.6139&lng=77.2090&formatted=0');
-        const srData = await srRes.json();
-        if(srData.status === 'OK') {
-          const sunrise = new Date(srData.results.sunrise);
-          const sunset = new Date(srData.results.sunset);
-          const formatTime = (d) => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-          
-          const panchangVals = document.querySelectorAll('.panchang-val');
-          if(panchangVals.length >= 2) {
-             panchangVals[0].innerText = formatTime(sunrise);
-             panchangVals[1].innerText = formatTime(sunset);
-          }
-        }
-      } catch (e) { console.log('Sunrise fetch failed'); }
+      if (elTithiName && data.tithi) {
+         elTithiName.innerText = data.tithi.name;
+         elTithiStart.innerText = data.tithi.start;
+         elTithiEnd.innerText = data.tithi.end;
+      }
+      
+      if (elNakshatra && data.nakshatra) {
+         elNakshatra.innerText = data.nakshatra.name;
+      }
       
     } catch (err) {
        console.error("Error updating Panchang:", err);
     }
   };
+  
+  // Call API immediately on load
   updateDailyPanchang();
+  
+  // Automatically re-fetch panchang every 1 hour (3600000ms) to keep data fresh without spamming the backend
+  setInterval(updateDailyPanchang, 3600000);
+  
+  // Live Clock: Update time and date automatically every second
+  setInterval(() => {
+     const currentDateEl = document.getElementById('currentDate');
+     if (currentDateEl) {
+        const now = new Date();
+        const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        currentDateEl.innerText = now.toLocaleDateString('en-GB', options).toUpperCase();
+     }
+  }, 1000);
 
 });
