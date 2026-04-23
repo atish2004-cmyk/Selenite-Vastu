@@ -11,6 +11,9 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@ishubhamx/panchangam-js": "^2.2.6",
+    "@mera-vansh/ms-panchang": "^1.1.0",
+    "astronomy-engine": "^2.1.19",
     "axios": "^1.14.0",
     "body-parser": "^2.2.2",
     "cors": "^2.8.6",
