@@ -177,51 +177,66 @@
 
       <!-- Dashboard / Panchang Section -->
       <section class="panchang-section container">
-        <div class="panchang-widget">
+        <div class="panchang-widget pandit-style">
           <div class="panchang-header">
             Today's Panchang
           </div>
           <div class="panchang-date" id="currentDate">
             THURSDAY, 09 APRIL 2026
           </div>
-          <div class="panchang-grid">
-            <div class="panchang-col">
-              <div class="panchang-time-icon">🌅</div>
-              <div class="panchang-val" id="panchang-sunrise">--</div>
-              <div class="panchang-label">Sunrise</div>
+          <div class="panchang-times-grid">
+            <div class="time-col">
+              <img src="https://img.icons8.com/color/48/sunrise.png" alt="Sunrise" class="time-icon">
+              <div class="time-val" id="panchang-sunrise">--:--:--</div>
             </div>
-            <div class="panchang-col">
-              <div class="panchang-time-icon">🌇</div>
-              <div class="panchang-val" id="panchang-sunset">--</div>
-              <div class="panchang-label">Sunset</div>
+            <div class="time-col">
+              <img src="https://img.icons8.com/color/48/sunset.png" alt="Sunset" class="time-icon">
+              <div class="time-val" id="panchang-sunset">--:--:--</div>
             </div>
-            <div class="panchang-col">
-              <div class="panchang-time-icon">🧘</div>
-              <div class="panchang-val" id="panchang-yoga">--</div>
-              <div class="panchang-label">Yoga</div>
+            <div class="time-col">
+              <img src="https://img.icons8.com/fluency/48/moon-rising.png" alt="Moonrise" class="time-icon">
+              <div class="time-val" id="panchang-moonrise">--:--:--</div>
             </div>
-            <div class="panchang-col">
-              <div class="panchang-time-icon">⏳</div>
-              <div class="panchang-val" id="panchang-karana">--</div>
-              <div class="panchang-label">Karana</div>
+            <div class="time-col">
+              <img src="https://img.icons8.com/fluency/48/moon-setting.png" alt="Moonset" class="time-icon">
+              <div class="time-val" id="panchang-moonset">--:--:--</div>
             </div>
           </div>
-          <div class="panchang-details">
-            <div class="panchang-detail-box" style="grid-column: 1 / -1;">
-              <h4>Daily Tithi Timings</h4>
-              <div class="tithi-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 10px;">
-                <div style="background: var(--card-bg); padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.05); border-left: 4px solid var(--primary-gold); box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
-                   <strong id="panchang-tithi-name" style="color: var(--primary-maroon); font-size: 1.1rem; display: block; margin-bottom: 8px;">--</strong>
-                   <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
-                      <span style="color: var(--text-light);">Start: <strong id="panchang-tithi-start" style="color: var(--text-dark);">--</strong></span>
-                      <span style="color: var(--text-light);">End: <strong id="panchang-tithi-end" style="color: var(--text-dark);">--</strong></span>
-                   </div>
-                </div>
+          
+          <div class="panchang-info-rows">
+            <div class="info-row split-row">
+              <div class="info-col">
+                <div class="info-title">MONTH</div>
+                <div class="info-val">Amanta: <span id="panchang-month-amanta">--</span></div>
+                <div class="info-val">Purnimanta: <span id="panchang-month-purnimanta">--</span></div>
+              </div>
+              <div class="info-col">
+                <div class="info-title">SAMVAT</div>
+                <div class="info-val">Vikram: <span id="panchang-vikram">--</span></div>
+                <div class="info-val">Shaka: <span id="panchang-shaka">--</span></div>
               </div>
             </div>
-            <div class="panchang-detail-box" style="grid-column: 1 / -1; border-bottom: none;">
-              <h4>Nakshatra</h4>
-              <p><strong id="panchang-nakshatra">--</strong></p>
+            
+            <div class="info-row split-row">
+              <div class="info-col align-center">
+                <div class="info-title inline">TITHI: </div>
+                <span class="info-val" id="panchang-tithi-name">--</span>
+              </div>
+              <div class="info-col align-center">
+                <div class="info-title inline">Till: </div>
+                <span class="info-val" id="panchang-tithi-end">--:--:--</span>
+              </div>
+            </div>
+
+            <div class="info-row split-row no-border">
+              <div class="info-col align-center">
+                <div class="info-title inline">Nakshatra: </div>
+                <span class="info-val" id="panchang-nakshatra-name">--</span>
+              </div>
+              <div class="info-col align-center">
+                <div class="info-title inline">Till: </div>
+                <span class="info-val" id="panchang-nakshatra-end">--:--:--</span>
+              </div>
             </div>
           </div>
         </div>

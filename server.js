@@ -47,6 +47,61 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/'))); 
 
 // API Routes
+const { getPanchangamDetails, getSunrise, getSunset, getMoonrise, getMoonset, Observer } = require('@ishubhamx/panchangam-js');
+
+app.post('/api/panchang', (req, res) => {
+    try {
+        const { day, month, year, hour, min, lat, lon, tzone } = req.body;
+        
+        if (!lat || !lon) {
+            return res.status(400).json({ error: 'lat and lon are required' });
+        }
+        
+        // Build Date object based on payload or use current date
+        let date = new Date();
+        if (year && month && day) {
+            date = new Date(year, month - 1, day, hour || 0, min || 0, 0);
+        }
+        
+        const obs = new Observer(lat, lon, tzone || 5.5);
+        
+        const panchangData = getPanchangamDetails(date, obs);
+        const sunriseTime = getSunrise(date, obs);
+        const sunsetTime = getSunset(date, obs);
+        const moonriseTime = getMoonrise(date, obs);
+        const moonsetTime = getMoonset(date, obs);
+        
+        const formatTime = (d) => {
+            if (!d || isNaN(new Date(d).getTime())) return "--";
+            return new Date(d).toLocaleTimeString('en-US', { hour12: false });
+        };
+        
+        const currentTithi = panchangData.tithis && panchangData.tithis.length > 0 ? panchangData.tithis[0] : null;
+        const currentNakshatra = panchangData.nakshatras && panchangData.nakshatras.length > 0 ? panchangData.nakshatras[0] : null;
+
+        res.json({
+            sunrise: formatTime(sunriseTime),
+            sunset: formatTime(sunsetTime),
+            moonrise: formatTime(moonriseTime),
+            moonset: formatTime(moonsetTime),
+            tithi: currentTithi ? {
+                name: panchangData.paksha + " " + currentTithi.name,
+                end: formatTime(currentTithi.endTime)
+            } : null,
+            nakshatra: currentNakshatra ? {
+                name: currentNakshatra.name,
+                end: formatTime(currentNakshatra.endTime)
+            } : null,
+            month: panchangData.masa ? panchangData.masa.name : "--",
+            samvat: panchangData.samvat ? panchangData.samvat : null
+        });
+        
+    } catch (err) {
+        console.error("Panchang API Error:", err);
+        res.status(500).json({ error: 'Failed to calculate panchang' });
+    }
+});
+
 app.post('/api/book', async (req, res) => {
     const { name, email, phone, address, service, message } = req.body;
     

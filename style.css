@@ -2330,3 +2330,88 @@ body {
 img, svg, video, iframe {
   max-width: 100%;
 }
+ 
+ 
+/* Pandit Style Panchang */
+.panchang-widget.pandit-style {
+  background-color: #f8f6ec;
+  border-radius: 12px;
+  overflow: hidden;
+  color: #1a1a1a;
+  font-family: inherit;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.panchang-widget.pandit-style .panchang-header {
+  background-color: #d8a82a;
+  color: #1a1a1a;
+  font-weight: 700;
+  text-align: center;
+  padding: 15px;
+  font-size: 1.4rem;
+}
+.panchang-widget.pandit-style .panchang-date {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding: 15px 0;
+  color: #222;
+}
+.panchang-times-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid #e5e0cc;
+  border-bottom: 1px solid #e5e0cc;
+  padding: 15px 0;
+  background-color: rgba(0,0,0,0.02);
+}
+.time-col {
+  text-align: center;
+}
+.time-icon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 5px;
+}
+.time-val {
+  font-size: 0.95rem;
+  color: #333;
+}
+.panchang-info-rows {
+  padding: 10px 20px;
+}
+.info-row {
+  padding: 15px 0;
+  border-bottom: 1px solid #e5e0cc;
+}
+.info-row.no-border {
+  border-bottom: none;
+}
+.split-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+.info-title {
+  color: #1b2d45;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+.info-title.inline {
+  display: inline-block;
+  margin-bottom: 0;
+  margin-right: 8px;
+}
+.info-val {
+  color: #444;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.align-center {
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 600px) {
+  .split-row { grid-template-columns: 1fr; }
+}
