@@ -481,30 +481,46 @@ document.addEventListener('DOMContentLoaded', () => {
   // ============================================
   const updateDailyPanchang = async () => {
     try {
-      const currentDateEl = document.getElementById('currentDate');
-      
-      // We will handle the live clock in a separate interval
       const now = new Date();
-      
-      // Fetch exact panchang data from the local Node backend
-      const response = await fetch("http://localhost:3000/api/panchang", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          day: now.getDate(),
-          month: now.getMonth() + 1,
-          year: now.getFullYear(),
-          hour: now.getHours(),
-          min: now.getMinutes(),
-          lat: 23.0758,
-          lon: 70.1337,
-          tzone: 5.5,
-        }),
-      });
+      const lat = 23.0758;
+      const lon = 70.1337;
+      const tzone = 5.5;
 
-      const data = await response.json();
+      // Dynamically import the library from esm.sh CDN
+      const { getPanchangamDetails, getSunrise, getSunset, getMoonrise, getMoonset, Observer } = await import('https://esm.sh/@ishubhamx/panchangam-js');
+
+      const obs = new Observer(lat, lon, tzone);
+      
+      const panchangData = getPanchangamDetails(now, obs);
+      const sunriseTime = getSunrise(now, obs);
+      const sunsetTime = getSunset(now, obs);
+      const moonriseTime = getMoonrise(now, obs);
+      const moonsetTime = getMoonset(now, obs);
+
+      const formatTime = (d) => {
+          if (!d || isNaN(new Date(d).getTime())) return "--";
+          return new Date(d).toLocaleTimeString('en-US', { hour12: false });
+      };
+
+      const currentTithi = panchangData.tithis && panchangData.tithis.length > 0 ? panchangData.tithis[0] : null;
+      const currentNakshatra = panchangData.nakshatras && panchangData.nakshatras.length > 0 ? panchangData.nakshatras[0] : null;
+
+      const data = {
+          sunrise: formatTime(sunriseTime),
+          sunset: formatTime(sunsetTime),
+          moonrise: formatTime(moonriseTime),
+          moonset: formatTime(moonsetTime),
+          tithi: currentTithi ? {
+              name: panchangData.paksha + " " + currentTithi.name,
+              end: formatTime(currentTithi.endTime)
+          } : null,
+          nakshatra: currentNakshatra ? {
+              name: currentNakshatra.name,
+              end: formatTime(currentNakshatra.endTime)
+          } : null,
+          month: panchangData.masa ? panchangData.masa.name : "--",
+          samvat: panchangData.samvat ? panchangData.samvat : null
+      };
 
       // Populate DOM elements
       const elSunrise = document.getElementById('panchang-sunrise');
@@ -529,8 +545,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (elMoonset && data.moonset) elMoonset.innerText = data.moonset;
       
       if (elMonthPurnimanta && data.month) elMonthPurnimanta.innerText = data.month;
-      // In North India (Purnimanta), Chaitra is one month ahead in Krishna Paksha vs Amanta. 
-      // For simplicity, we assign the same name or add placeholder logic.
       if (elMonthAmanta && data.month) elMonthAmanta.innerText = data.month; 
       
       if (data.samvat) {
